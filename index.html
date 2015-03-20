@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Arial; background-color: #FAFFDB}
+      form { background: #000; padding: 3px; top: 0; width: 70%; margin: 0 auto; margin-top: 30px;}
+      form input { border: 0; padding: 10px; width: 50%; margin-right: .5%;}
+      form button { width: 20px%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #m {width: 300px;  text-align: center; }
+    </style>
+    
+    <!-- why doesn't this work ? -->
+    <!-- want to move css and the js in the script tag below to separate files -->
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+  </head>
+  
+  <body>
+    <form class="chatInputBox" action="">
+      <input id="m" autocomplete="off" autofocus><button>Send</button>
+    </form>
+
+    <div class="messageContainer">
+      <ul id="messages"></ul>
+    <div class="messageContainer">
+  </body>
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  var socket = io();
+  $('form').submit(function(){
+    socket.emit('chat message', $('#m').val());
+    $('#m').val('');
+    return false;
+  });
+    var socket = io();
+  $('form').submit(function(){
+    socket.emit('chat message', $('#m').val());
+    $('#m').val('');
+    return false;
+  });
+  socket.on('chat message', function(msg){
+    $('#messages').prepend($('<li>').text(msg));
+  });
+</script>
+
+</html>
