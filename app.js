@@ -1,6 +1,6 @@
 // chat room weekend project
 
-// get the css file to load
+// crud for login with postgres?
 // save all messages to a redis hash
 // get redis body parser etc to load
 // get current app to save all chats to redis
@@ -10,7 +10,8 @@
 // different than the first homework due to socket.io not needing
 // express
 
-var app = require('express')(),
+var express = require('express'),
+    app = express(),
     http = require('http').Server(app),
     io = require('socket.io')(http),
     redis = require("redis"),
@@ -18,40 +19,71 @@ var app = require('express')(),
     methodOverride = require("method-override"),
     bodyParser = require("body-parser");
 
-// hardcode the user name globally for now
-userName = "Tom";
- 
-// dont know why this does not work
-// app.use(express.static(__dirname + '/public'));
 
-// route
+// allows us to use ejs instead of html
+app.set("view engine", "ejs");
+ 
+// for static files
+app.use(express.static(__dirname + '/public'));
+
+// root route
 app.get('/', function(req, res){
   // res.send('<h1>Hello world</h1>');
-  res.sendFile(__dirname + '/index.html');
+  // res.sendFile(__dirname + '/index.html');
+  res.render("index");
 });
 
-// this pushes the message to redis
-function addMessage (name, message) {
-  var stringToPush = name + ": " + message;
-  console.log("string to push: " + stringToPush);
-  client.RPUSH("conversationlist", stringToPush);
+// create route
+app.post("/users/create", function(req,res){
+  console.log("create route");
+  client.LPUSH("chatterlist", req.body.chattername);
+  res.redirect("/");
+});
+
+// this pushes the user to redis
+function addUser (user) {
+  console.log(user);
+  client.RPUSH("userlist", user);
 }
 
-// this is the communication to socket
+// this pushes the message to redis
+function addMessage (message) {
+  console.log(message);
+  client.RPUSH("conversationlist", message);
+}
+
+// this is the communication to socket.io
+
+// this is where I need to console.log the user
 io.on('connection', function(socket){
+
+  socket.join("Mike's chat");
+
   console.log('a user connected');
-    socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
+
+  var nsp = io.of('/my-namespace');
+
+
+  socket.on('private message', function (from, msg) {
+    console.log('Private message by ', from, ' saying ', msg);
   });
 
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-    addMessage(userName, msg);
-  });
+
+socket.on('chat message', function(msg){
+  io.emit('chat message', msg);
+  addMessage(msg);
+});
+
+socket.on('user joined', function(msg){
+  io.emit('user joined', msg);
+  addMessage(msg);
+});
+
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
+
 });
 
 // load our server

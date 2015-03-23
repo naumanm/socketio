@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  </head>
+  
+  <body>
+    <h1 id="userName"></h1>
+
+    <form class="chatInputBox" action="">
+      <input id="m" placeholder="Enter a chat..." autofocus><button class="formButton">Send</button>
+    </form>
+
+    <div class="messageContainer">
+      <ul id="messages"></ul>
+    <div class="messageContainer">
+  </body>
+
+  <script>
+
+    // initialize the socket
+    var socket = io();
+
+    // this is the form submit and send to backend
+    $('form').submit(function(){
+      message = person + ": " + $('#m').val();
+      socket.emit('chat message', message); // this send the message to others
+      $('#m').val('');  // this sets the input field to blank
+
+      return false;
+    });
+
+    // This updates the index.ejs with the message
+    socket.on('chat message', function(msg){
+      $('#messages').prepend($('<li>').text(msg));
+    });
+
+    // This gets and sets the person who logs in
+    var person = prompt("Please enter your name");
+    if (person !== null) {
+      document.getElementById("userName").innerHTML =
+      "Hello " + person + "!";
+
+      socket.emit('private message', person + " joined the chat", "Hi " + person);
+    }
+
+  </script>
+</html>
+
+
+
+
+

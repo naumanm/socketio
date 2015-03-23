@@ -1,0 +1,14 @@
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Arial; background-color: #F1FFD5}
+      h1 {text-align: center; margin-top: 10px;}
+      form input { border: 2px; padding: 10px; margin-left: 11px;}
+
+      .formButton { width: 20px%; background: rgb(130, 224, 255); border: none; padding: 10px; margin-right: 15px;}
+      .messageContainer {width: 400px; margin: 0 auto; margin-top: 10px;}
+      .chatInputBox {width: 300px; margin: 0 auto; margin-top: 10px; padding: 3px;}
+      .userInputBox {width: 300px; margin: 0 auto; margin-top: 10px; padding: 3px;}
+
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #m {width: 220px;  text-align: center; }
